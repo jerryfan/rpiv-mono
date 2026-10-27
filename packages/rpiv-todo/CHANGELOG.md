@@ -7,6 +7,23 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [1.0.13] - 2026-05-01
+
+### Added
+- `docs/vertical-cover.{svg,png}` — portrait-orientation hero artwork (1280×800 canvas; PNG downscaled to 320×711).
+
+### Changed
+- Cover canvas extended from 1280×640 to 1280×800 with refreshed crop marks/footer.
+- README hero swapped from `docs/cover.png` to `docs/vertical-cover.png`, rendered at `width="160"`. The `<a>` wrapper around the `<picture>` was removed so the image is no longer a clickable link to the package directory.
+
+## [1.0.12] - 2026-05-01
+
+### Added
+- `docs/cover.png` — package hero (rasterized from `docs/cover.svg` via `rsvg-convert`, 1280×640).
+
+### Changed
+- README hero: open with a `<picture>`-wrapped `cover.png` above the shield badges so pi.dev's package-card image extractor picks the friendly artwork instead of the npm version shield. Existing `docs/overlay.jpg` screenshot retained below the description.
+
 ## [1.0.11] - 2026-04-30
 
 ### Changed

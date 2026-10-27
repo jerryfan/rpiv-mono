@@ -1,5 +1,9 @@
 # rpiv-warp
 
+<picture>
+  <img src="https://raw.githubusercontent.com/juicesharp/rpiv-mono/main/packages/rpiv-warp/docs/vertical-cover.png" alt="rpiv-warp vertical-cover" width="160">
+</picture>
+
 [![npm version](https://img.shields.io/npm/v/@juicesharp/rpiv-warp.svg)](https://www.npmjs.com/package/@juicesharp/rpiv-warp)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
@@ -15,14 +19,31 @@ pi install npm:@juicesharp/rpiv-warp
 
 ## What you get
 
-| Pi event | Warp toast |
-|---|---|
-| `session_start` (startup only) | "Pi Agent active — notifications enabled." |
-| `agent_end` | last user prompt → last assistant reply (truncated 200 chars) |
-| `tool_call` (when Pi calls `ask_user_question`) | "Input needed" |
-| `turn_end` | last tool name of the turn |
+| Pi event | Warp wire event | Effect on the tab badge |
+|---|---|---|
+| `session_start` (startup only) | `session_start` | records plugin version |
+| `agent_start` | `prompt_submit` | → **In progress** |
+| `agent_end` | `stop` | → **Success** (checkmark) |
+| `tool_call` (configured blocking tool) | `question_asked` | → **Blocked** ("Waiting for your answer") |
+| `tool_execution_end` (configured blocking tool) | `tool_complete` | Blocked → **In progress** |
 
 `session_start` is filtered to `reason === "startup"` only — `/new`, `/resume`, `/fork`, `/reload` do NOT emit (you're already looking at the terminal in those cases).
+
+## Config
+
+Optional file at `~/.config/rpiv-warp/config.json`:
+
+```json
+{
+  "blockingTools": ["ask_user_question", "my_custom_blocking_tool"]
+}
+```
+
+| Key | Default | Meaning |
+|---|---|---|
+| `blockingTools` | `["ask_user_question"]` | Tool names that put the Warp tab badge into the **Blocked** state when called and clear it when the tool finishes. Use for tools that genuinely block the agent loop on user input. |
+
+Missing or malformed file falls back to defaults — no config required.
 
 ## Detection
 
@@ -39,7 +60,7 @@ pi install npm:@juicesharp/rpiv-warp
 | Not in Warp (`TERM_PROGRAM !== "WarpTerminal"`) | Silent no-op — extension loads, every handler short-circuits |
 | Pi in print mode (`pi -p "..."`) | **Toasts still fire** — print mode emits all four events at the agent layer |
 | `/dev/tty` unreachable (cron, no-tty SSH) | Silent no-op — `try/catch` around `openSync` |
-| Windows | Silent no-op — `/dev/tty` doesn't exist; ConPTY support is future work |
+| Windows | Best-effort — writes OSC 777 to `process.stdout` so ConPTY forwards it to Warp ([Warp eng blog: "ConPTY will send even unrecognized OSCs to the shell"](https://www.warp.dev/blog/building-warp-on-windows)). Skipped when stdout is not a TTY (piped/redirected output). Untested in the wild — no Warp plugin currently ships a Windows transport |
 | Known-broken Warp build | Silent no-op — broken-version table gates emission per channel |
 
 ## Why standalone (not a sibling)

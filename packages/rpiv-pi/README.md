@@ -1,5 +1,9 @@
 # rpiv-pi
 
+<picture>
+  <img src="https://raw.githubusercontent.com/juicesharp/rpiv-mono/main/packages/rpiv-pi/docs/vertical-cover.png" alt="rpiv-pi vertical-cover" width="160">
+</picture>
+
 [![npm version](https://img.shields.io/npm/v/@juicesharp/rpiv-pi.svg)](https://www.npmjs.com/package/@juicesharp/rpiv-pi)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
